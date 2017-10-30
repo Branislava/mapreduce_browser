@@ -1,0 +1,178 @@
+body {
+    background-color: #4682b4;
+    font-family: Calibri;
+}
+
+h2 {
+ 
+    text-align: center;
+}
+
+div#wrapper {
+    height: 700px;
+    width: 850px;
+    margin: auto;
+    background-color: #FFFFFF;
+    opacity: 0.8; 
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+div#wrapper_completed {
+    width: 80%;
+    height: 200px;
+    margin: auto;
+    background-color: #FFFFFF;
+    opacity: 0.8; 
+    margin-top: 50px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.diagram {
+    height: 425px;
+    width: 850px;
+    text-align: center;
+}
+.big_title {
+    text-align: center;
+    font-size: 18pt;
+    background-color: gray;
+    opacity: 0.8;
+    padding-top: 10px;
+    margin-bottom: 50px;
+}
+
+#statistics {
+    text-align: left;
+    width: 350px;
+    margin: auto;
+}
+
+li {
+    list-style-type: none;
+    text-align: left;
+}
+
+div#status {
+    width: 100%;
+}
+
+div#info {
+    height: 320px;
+    width: 50%;
+    opacity: 1;
+    color: pink;
+    background-color: black;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+div#picture {
+    height: 300px;
+    width: 45%;   
+    float: right;
+    margin-top: 10px;
+}
+
+button#get_info, button#login, button#logout, button#friends_btn {
+    width: 95%;
+    display: block;
+    margin-top: 5px;
+}
+
+div#friends_div {
+   width: 95%;
+   height: 280px;
+   background-color: black;
+   color: pink;
+   overflow: scroll;
+   margin-top: 10px;
+}
+
+#num_completed_tasks {
+    color: #9ACD32;
+}
+
+#num_unassigned_tasks {
+    color: #778899;
+}
+
+#num_assigned_tasks {
+    color: #87CEEB;
+}
+
+#num_terminated_tasks {
+    color: #DC143C;
+}
+legend {
+	display: block;
+}
+
+.centered {
+	margin: auto;
+}
+
+.myButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+	background:-moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+	background:-webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+	background:-o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+	background:-ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+	background-color:#ffffff;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+	margin-bottom: 35px;
+	display: block;
+}
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+	background:-moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+	background:-webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+	background:-o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+	background:-ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+	background-color:#f6f6f6;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+    color: #4682b4;
+}
+
+a:hover, a:active {
+    color: black;
+    background-color: #4682b4;
+}
+
+.nice_text {
+    font-size: 25pt;
+    color: #0A0A0A;
+}
+
+#welcome {
+    margin-bottom: 80px;
+}
+
+#status {
+    margin-top: 50px;
+    font-size: 15pt;
+}

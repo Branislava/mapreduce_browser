@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> Thank you for helping out! </title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link rel="stylesheet" href="/stylesheet/menu.css" />
+    <link rel="stylesheet" href="/stylesheet/gallery.css" />
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body onload='help()'>
+    <nav id="main-menu">
+        <ul class="nav-bar">
+            <li class="nav-button-home"><a href="/home">Home Page</a>
+            </li>
+            <li class="nav-button-profile"><a href="/user_profile">User Profile</a>
+            </li>
+            <li class="nav-button-logout"><a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="wrapper" style="height: 450px;">
+        <div class="big_title" style="padding-top: 20px;">Helper Cockpit</div>
+        <div class="row">
+            <div class="column">
+                <img src="images/1s.jpg" onclick="openModal();currentSlide(1)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/2s.jpg" onclick="openModal();currentSlide(2)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/3s.jpg" onclick="openModal();currentSlide(3)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/4s.jpg" onclick="openModal();currentSlide(4)" class="hover-shadow">
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <img src="images/5s.jpg" onclick="openModal();currentSlide(1)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/6s.jpg" onclick="openModal();currentSlide(2)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/7s.jpg" onclick="openModal();currentSlide(3)" class="hover-shadow">
+            </div>
+            <div class="column">
+                <img src="images/8s.jpg" onclick="openModal();currentSlide(4)" class="hover-shadow">
+            </div>
+        </div>
+        <div id="myModal" class="modal">
+            <span class="close cursor" onclick="closeModal()">&times;</span>
+            <div class="modal-content">
+
+                <div class="mySlides">
+                    <div class="numbertext">1 / 8</div>
+                    <img src="images/1.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">2 / 8</div>
+                    <img src="images/2.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">3 / 8</div>
+                    <img src="images/3.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">4 / 8</div>
+                    <img src="images/4.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">5 / 8</div>
+                    <img src="images/5.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">6 / 8</div>
+                    <img src="images/6.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">7 / 8</div>
+                    <img src="images/7.jpg" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <div class="numbertext">8 / 8</div>
+                    <img src="images/8.jpg" style="width:100%">
+                </div>
+
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+        </div>
+
+        <div id="status">
+            <ul>
+                <li>You've been assigned <span id='assigned'>0</span> tasks</li>
+                <li>You've completed <span id='completed'>0</span> tasks</li>
+                <li>Your current credit: <span id='credit'><%- user.credit %></span>
+                </li>
+            </ul>
+        </div>
+
+        <div id="help_again">
+            <button id='btn_help' class='myButton centered' onclick="help()" disabled="true">Help again?</button>
+        </div>
+    </div>
+    <script src="js/gallery.js"></script>
+    <script src="js/socket.io.js"></script>
+
+    <script>
+        // connecting socket
+        var socket = io.connect('http://localhost:3000', {
+            reconnect: true
+        });
+        // emiting session data
+        var user = <%- JSON.stringify(user) %> ;
+        socket.emit('helper_joined', user);
+
+        var completed_span = document.getElementById('completed');
+        var btn_help = document.getElementById('btn_help');
+        var assigned_span = document.getElementById('assigned');
+
+        var results;
+        var dataReceived;
+
+        function help() {
+
+            results = new Array();
+            dataReceived = 0;
+
+            // disable the help again button
+            document.getElementById('btn_help').disabled = 'true';
+
+            // request subtask from server
+            socket.emit('subtask_request', {});
+
+            // getting tasks from server
+            socket.on('assign_jobs', function(jobs) {
+                assigned_span.innerHTML = jobs.length;
+                btn_help.removeAttribute("disabled");
+
+                for (var i = 0; i < jobs.length; i++)
+                    createWorker(i, jobs[i].id, jobs[i].parent_id, jobs[i].map_func, jobs[i].data, jobs.length);
+            });
+        }
+
+        function createWorker(i, id, parent_id, code, data, q) {
+            window.URL = window.URL || window.webkitURL;
+            var response = code;
+            var blob;
+            try {
+                blob = new Blob([response], {
+                    type: 'application/javascript'
+                });
+            } catch (e) { // Backwards-compatibility
+                window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
+                blob = new BlobBuilder();
+                blob.append(response);
+                blob = blob.getBlob();
+            }
+            var worker = new Worker(URL.createObjectURL(blob));
+            worker.postMessage(data);
+
+            worker.onmessage = function(event) {
+                results[i] = [id, parent_id, event.data];
+
+                if (++dataReceived === q) {
+                    computeFinalSolution();
+                }
+            };
+        }
+
+        function computeFinalSolution() {
+
+            for (var i = 0; i < results.length; i++) {
+
+                var id = results[i][0];
+                var parent_id = results[i][1];
+                var result = results[i][2];
+
+                socket.emit('subtask_finished', {
+                    result: result,
+                    subtask_id: id,
+                    user_id: user.id,
+                    task_id: parent_id
+                });
+                // refresh credit status
+                $(function() {
+                    $.ajax({
+                        url: '/credit/' + user.id,
+                        dataType: 'json',
+                        cache: false
+                    }).done(function(o) {
+                        document.getElementById('credit').innerHTML = o.credit;
+                    });
+                });
+
+                // update completed info
+                var completed = parseInt(completed_span.innerHTML);
+                completed += 1;
+                completed_span.innerHTML = completed;
+            }
+        }
+    </script>
+</body>
+
+</html>

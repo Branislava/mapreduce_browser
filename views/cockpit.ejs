@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> Server Cockpit </title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link rel="stylesheet" href="/stylesheet/menu.css" />
+    <meta charset="UTF-8" />
+
+    <script src="/js/go-debug.js"></script>
+</head>
+
+<body onload='render()'>
+
+    <nav id="main-menu">
+        <ul class="nav-bar">
+            <li class="nav-button-home"><a href="/home">Home Page</a>
+            </li>
+            <li class="nav-button-profile"><a href="/user_profile">User Profile</a>
+            </li>
+            <li class="nav-button-logout"><a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="wrapper">
+        <div class="big_title">Server Cockpit</div>
+        <div id="diagTasksStatus" class="diagram"></div>
+        <div id="statistics">
+            <ul>
+                <li>Total number of jobs:
+                    <%- task.map_no %>
+                </li>
+                <li>Number of completed jobs:
+                    <%- task.completed_subtasks %>
+                </li>
+                <% if (task.map_no == task.completed_subtasks) { %>
+                <li><a href="/cockpit/results/<%- task.id %>" target='_blank'>Download your results</a>
+                    <% } %>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var queue;
+
+        function render() {
+            // job queue
+            queue = <%- JSON.stringify(task.subtasks) %> ;
+            drawTasksStatusDiag(queue);
+        }
+
+        function drawTasksStatusDiag(queue) {
+
+            var NEWBIE = 1;
+            var TODDLER = 2;
+            var NEGLECTED = 3;
+            var COMPLETED = 4;
+
+            items_queue = new Array();
+
+            for (var i = 0; i < queue.length; i++) {
+
+                items_queue[i] = {
+                    text: "Task " + (i + 1),
+                    val: 300
+                }
+
+                if (queue[i]['status'] == TODDLER) {
+                    items_queue[i].tooltip = "Task assigned, now waiting...";
+                    items_queue[i].color = '#87CEEB';
+                } else if (queue[i]['status'] == NEWBIE) {
+                    items_queue[i].tooltip = "Task is not assigned to any helper";
+                    items_queue[i].color = '#778899';
+                } else if (queue[i]['status'] == NEGLECTED) {
+                    items_queue[i].tooltip = "Task was neglected by helper";
+                    items_queue[i].color = '#DC143C';
+                } else if (queue[i]['status'] == COMPLETED) {
+                    items_queue[i].tooltip = "Task completed in " + (queue[i].end_time - queue[i].start_time) + " ms!";
+                    items_queue[i].color = '#90EE90';
+                }
+            }
+
+            drawDiag("Status of the subtasks (hover bars for more info)", "diagTasksStatus");
+        }
+
+        function drawDiag(title, elem_id) {
+            var $ = go.GraphObject.make;
+            var myDiagram = $(go.Diagram, elem_id);
+
+            // the template for each item in a node's array of item data
+            var itemTempl =
+                $(go.Panel, "TableColumn",
+                    $(go.Shape, {
+                            row: 0,
+                            alignment: go.Spot.Bottom
+                        }, {
+                            fill: "#4682B4",
+                            stroke: null,
+                            width: (700 / queue.length),
+                            margin: 5
+                        },
+                        new go.Binding("height", "val"),
+                        new go.Binding("fill", "color")),
+                    $(go.TextBlock, {
+                            row: 1
+                        },
+                        new go.Binding("text")), {
+                        toolTip: $(go.Adornment, "Auto",
+                            $(go.Shape, {
+                                fill: "#A9A9A9"
+                            }),
+                            $(go.TextBlock, {
+                                    margin: 4
+                                },
+                                new go.Binding("text", "tooltip"))
+                        )
+                    }
+                );
+
+            myDiagram.nodeTemplate =
+                $(go.Node, "Auto",
+                    $(go.Shape, {
+                        fill: "white"
+                    }),
+                    $(go.Panel, "Vertical",
+                        $(go.Panel, "Table", {
+                                margin: 20,
+                                itemTemplate: itemTempl
+                            },
+                            new go.Binding("itemArray", "items")),
+                        $(go.TextBlock, {
+                                font: "bold 12pt Calibri"
+                            },
+                            new go.Binding("text"))
+                    )
+                );
+
+            var nodeDataArray = [{
+                key: 1,
+                text: title,
+                items: items_queue
+            }];
+            var linkDataArray = [{
+                from: 1,
+                to: 1
+            }];
+            myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+            myDiagram.model.removeLinkData(linkDataArray[0]);
+        }
+    </script>
+</body>
+
+</html>

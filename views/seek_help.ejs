@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> Please, upload files with your code and data. </title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link rel="stylesheet" href="/stylesheet/menu.css" />
+    <link rel="stylesheet" href="/stylesheet/form.css" />
+
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <nav id="main-menu">
+        <ul class="nav-bar">
+            <li class="nav-button-home"><a href="/home">Home Page</a>
+            </li>
+            <li class="nav-button-profile"><a href="/user_profile">User Profile</a>
+            </li>
+            <li class="nav-button-logout"><a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="wrapper" style="height: 670px;">
+        <div class="big_title" style="padding-top: 10px;">Job Assigner Cockpit</div>
+        <p class="forgot" style='color: red; text-align: center'>
+            <%= error %>
+        </p>
+        <form id="upload_form" action="/upload_files" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Upload function files and data:</legend>
+
+                <label for="text">Short description:</label>
+                <input class='myButton' type="text" name="desc" id="desc" required/>
+
+                <label for="number">Number of map jobs:</label>
+                <input class='myButton' type="number" name="map_no" id="map_no" min="2" max="50" value="8" required/>
+
+                <label for="file">map.js</label>
+                <input class='myButton' type="file" name="map_f" id="map_f" required/>
+
+                <label for="file">reduce.js</label>
+                <input class='myButton' type="file" name="reduce_f" id="reduce_f" required/>
+
+                <label for="file">data</label>
+                <input class='myButton' type="file" name="data_f" id="data_f" required/>
+
+                <input class='myButton' type="submit" name="upload" id="upload" value="Upload all" />
+            </fieldset>
+        </form>
+    </div>
+</body>
+
+</html>

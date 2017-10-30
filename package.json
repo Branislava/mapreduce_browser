@@ -1,0 +1,36 @@
+{
+  "name": "fb_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "client-sessions": "^0.8.0",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.2",
+    "errorhandler": "*",
+    "express": "^4.14.0",
+    "express-session": "^1.15.3",
+    "line-reader": "^0.4.0",
+    "method-override": "*",
+    "mongodb": "^2.2.29",
+    "monk": "^6.0.1",
+    "morgan": "^1.7.0",
+    "multer": "1.1.0",
+    "password-hash": "^1.2.2",
+    "shortid": "^2.2.8",
+    "socket.io": "^2.0.3",
+    "split-file": "^2.1.0"
+  },
+  "devDependencies": {
+    "should": "~7.1.0",
+    "mocha": "~2.3.3",
+    "supertest": "~1.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> User Profile </title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link rel="stylesheet" href="/stylesheet/menu.css" />
+    <link rel="stylesheet" href="/stylesheet/button.css" />
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <nav id="main-menu">
+        <ul class="nav-bar">
+            <li class="nav-button-home"><a href="/home">Home Page</a>
+            </li>
+            <li class="nav-button-profile"><a href="/user_profile">User Profile</a>
+            </li>
+            <li class="nav-button-logout"><a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="wrapper" style="height: 350px;">
+        <div class="big_title" style="padding-top: 20px;">User Profile Page</div>
+        <ul>
+            <li>First name: <span><%- user.fname %></span>
+            </li>
+            <li>Last name: <span><%- user.lname %></span>
+            </li>
+            <li>Email address: <span><%- user.email %></span>
+            </li>
+            <li>Current credit: <span><%- user.credit %></span>
+            </li>
+            <li>Tasks helped with: <span><%- number_of_helped_tasks %></span>
+            </li>
+            <li>Tasks assigned to helpers:
+                <ol>
+                    <% for(var i=0 ; i < assigned_tasks.length; i++) { %>
+                        <li style='list-style-type: lower-roman;'>
+                            <a href='/cockpit/<%= assigned_tasks[i].id %>'>
+                                <%= assigned_tasks[i].desc %>
+                            </a>
+                            <a href='/cockpit/remove/<%= assigned_tasks[i].id %>'>
+                                [remove]
+                            </a>
+                        </li>
+                        <% } %>
+                </ol>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>

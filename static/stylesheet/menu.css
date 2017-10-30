@@ -1,0 +1,16 @@
+#main-menu .nav-bar {
+    list-style: none;
+	text-align: right;
+	margin-right: 100px;
+}
+#main-menu .nav-bar li {
+    display: inline;
+    padding: 0 10px;
+
+}
+#main-menu .nav-bar li a {
+    text-decoration: none;
+    color: #333;
+	padding-right: 20px;
+    text-shadow: 1px 1px 1px #ccc;
+}

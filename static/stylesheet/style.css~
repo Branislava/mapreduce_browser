@@ -1,0 +1,63 @@
+body {
+	background-color: #F1A3C5;
+}
+
+h2 {
+ 
+    text-align: center;
+}
+
+div#wrapper {
+	height: 800px;
+	width: 55%;
+	margin: auto;
+	background-color: #FFFFFF;
+	opacity: 0.8; 
+        padding-left: 50px;
+        margin-top: 50px;
+        padding-top: 50px;
+        border-radius: 25px;
+}
+
+div#status {
+    width: 100%;
+}
+
+div#info {
+    height: 320px;
+    width: 50%;
+    opacity: 1;
+    color: pink;
+    background-color: black;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+div#picture {
+    height: 300px;
+    width: 45%;   
+    float: right;
+    margin-top: 10px;
+}
+
+img {
+
+    border-color: pink;
+    border-style: dotted;
+    border-width: 2px;
+}
+
+button#get_info, button#login, button#logout, button#friends_btn {
+    width: 95%;
+    display: block;
+    margin-top: 5px;
+}
+
+div#friends_div {
+   width: 95%;
+   height: 280px;
+   background-color: black;
+   color: pink;
+   overflow: scroll;
+   margin-top: 10px;
+}

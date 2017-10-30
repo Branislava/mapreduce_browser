@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+    <title> Welcome! </title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link rel="stylesheet" href="/stylesheet/menu.css" />
+    <link rel="stylesheet" href="/stylesheet/button.css" />
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <nav id="main-menu">
+        <ul class="nav-bar">
+            <li class="nav-button-home"><a href="/home">Home Page</a>
+            </li>
+            <li class="nav-button-profile"><a href="/user_profile">User Profile</a>
+            </li>
+            <li class="nav-button-logout"><a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="wrapper" style="height: 450px;">
+        <div class="big_title" style="padding-top: 20px;">Home Page</div>
+
+        <div class='nice_text'>Welcome,
+            <%- user.fname %>!</div>
+
+        <a href="/help_out" class="button">
+            <span>Help out!</span>
+        </a>
+        <a href="/seek_help" class="button">
+            <span>Seek help?</span>
+        </a>
+    </div>
+</body>
+
+</html>
