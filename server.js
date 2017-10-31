@@ -36,10 +36,10 @@ const COMPLETED = 4;
 /**** END of flags for subtasks ****/
 
 /* maximum allowed time per job execution */
-const TIMEOUT = 1000;
+const TIMEOUT = 1 * 60 * 1000;
 
 /* max number of assigned subtasks per help */
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 1;
 
 /* starting credit */
 const STARTING_CREDIT = 100;
@@ -214,12 +214,14 @@ app.get('/seek_help', requireLogin, function(req, res) {
                 user: req.session.user,
                 error: ''
             });
-                  res.render("error.ejs", {
+        else {
+            res.render("error.ejs", {
                     user: req.session.user,
                     error: 'You currently have ' + user.credit + ' credits, \
                             which is not enough to assign new task. \
                             Would you like to help a bit?'
             });
+        }
     });
 
 
@@ -256,8 +258,6 @@ app.get('/user_profile', requireLogin, function(req, res) {
 
 // Preview assigned job status
 app.get('/cockpit/:task_id', requireLogin, function(req, res) {
-
-
 
     // first, see if there are neglected jobs
     job_collection.find({
@@ -459,6 +459,7 @@ io.on('connection', function(socket) {
     // remembering user's session
     socket.on('helper_joined', function(user) {
         socket.user = user;
+        console.log('helper ' + user.email + ' in the house');
     });
 
     socket.on('subtask_request', function() {
@@ -471,6 +472,9 @@ io.on('connection', function(socket) {
             status: TODDLER
         }).
         forEach(function(job) {
+            
+            console.log(job.id + ' neglected');
+            
             job_collection.updateOne({
                 id: job.id
             }, {
@@ -490,7 +494,7 @@ io.on('connection', function(socket) {
             .toArray(function(err, resArray) {
                 // emit jobs
                 socket.emit('assign_jobs', resArray);
-
+                
                 for (var i = 0; i < resArray.length; i++) {
                     // and now update jobs' status
                     job_collection.updateOne({
@@ -536,6 +540,8 @@ io.on('connection', function(socket) {
                 credit: JOB_GAIN
             }
         });
+        
+        console.log('finished job ' + response.subtask_id);
     });
 });
 /***************************** END OF SOCKETS DEPARTMENT *************************/

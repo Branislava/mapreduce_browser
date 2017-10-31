@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 
-<body onload='help()'>
+<body onload="startWaitingNewJobs()">
     <nav id="main-menu">
         <ul class="nav-bar">
             <li class="nav-button-home"><a href="/home">Home Page</a>
@@ -109,52 +109,71 @@
                 </li>
             </ul>
         </div>
-
-        <div id="help_again">
-            <button id='btn_help' class='myButton centered' onclick="help()" disabled="true">Help again?</button>
-        </div>
     </div>
     <script src="js/gallery.js"></script>
     <script src="js/socket.io.js"></script>
-
     <script>
         // connecting socket
         var socket = io.connect('http://localhost:3000', {
             reconnect: true
         });
+
         // emiting session data
         var user = <%- JSON.stringify(user) %> ;
         socket.emit('helper_joined', user);
-
+    </script>
+    <script>
         var completed_span = document.getElementById('completed');
-        var btn_help = document.getElementById('btn_help');
         var assigned_span = document.getElementById('assigned');
 
         var results;
         var dataReceived;
+        
+        var scan;
 
-        function help() {
-
-            results = new Array();
-            dataReceived = 0;
-
-            // disable the help again button
-            document.getElementById('btn_help').disabled = 'true';
-
-            // request subtask from server
-            socket.emit('subtask_request', {});
-
-            // getting tasks from server
-            socket.on('assign_jobs', function(jobs) {
-                assigned_span.innerHTML = jobs.length;
-                btn_help.removeAttribute("disabled");
-
-                for (var i = 0; i < jobs.length; i++)
-                    createWorker(i, jobs[i].id, jobs[i].parent_id, jobs[i].map_func, jobs[i].data, jobs.length);
-            });
+        function startWaitingNewJobs() {
+            scan = setInterval(scanForJobs, 500);
+            //console.log('timer started');
         }
 
+        function stopWaitingNewJobs() {
+            clearInterval(scan);
+            //console.log('timer stopped');
+        }
+        
+        function increment(e, val) {
+            e.innerHTML = parseInt(e.innerHTML) + val;
+        }
+        
+        function scanForJobs() {
+        
+            socket.emit('subtask_request', {});
+        }
+        
+        // getting tasks from server
+        socket.on('assign_jobs', function(jobs) {
+        
+            if (jobs.length > 0) {
+            
+                // stop looking for new jobs
+                stopWaitingNewJobs();
+                
+                // update information
+                increment(assigned_span, jobs.length);
+                
+                // reseting batch variables
+                results = new Array();
+                dataReceived = 0;
+                
+                // assign workers for jobs
+                for (var i = 0; i < jobs.length; i++) 
+                    createWorker(i, jobs[i].id, jobs[i].parent_id, jobs[i].map_func, jobs[i].data, jobs.length);
+                
+            }
+        });
+
         function createWorker(i, id, parent_id, code, data, q) {
+        
             window.URL = window.URL || window.webkitURL;
             var response = code;
             var blob;
@@ -172,44 +191,63 @@
             worker.postMessage(data);
 
             worker.onmessage = function(event) {
-                results[i] = [id, parent_id, event.data];
 
-                if (++dataReceived === q) {
-                    computeFinalSolution();
+                // if not already computed (if it is, then we have a bug)
+                if(!results[i]) {
+                    results[i] = [id, parent_id, event.data];
+                    dataReceived++;
+                    
+                    // send all results and update information
+                    if (dataReceived === q)
+                        computeFinalSolution()
+                        .then(increment(completed_span, results.length));
+                }
+                else {
+                    console.log('job ' + results[i][0] + ' done again... bad!');
                 }
             };
         }
 
-        function computeFinalSolution() {
-
-            for (var i = 0; i < results.length; i++) {
-
-                var id = results[i][0];
-                var parent_id = results[i][1];
-                var result = results[i][2];
-
-                socket.emit('subtask_finished', {
-                    result: result,
-                    subtask_id: id,
-                    user_id: user.id,
-                    task_id: parent_id
+        async function sendResultsPerJob(i) {
+        
+            var id = results[i][0];
+            var parent_id = results[i][1];
+            var result = results[i][2];
+            
+            socket.emit('subtask_finished', {
+                result: result,
+                subtask_id: id,
+                user_id: user.id,
+                task_id: parent_id
+            });
+            
+            // refresh credit status
+            $(function() {
+                $.ajax({
+                    url: '/credit/' + user.id,
+                    dataType: 'json',
+                    cache: false
+                }).done(function(o) {
+                    document.getElementById('credit').innerHTML = o.credit;
                 });
-                // refresh credit status
-                $(function() {
-                    $.ajax({
-                        url: '/credit/' + user.id,
-                        dataType: 'json',
-                        cache: false
-                    }).done(function(o) {
-                        document.getElementById('credit').innerHTML = o.credit;
-                    });
-                });
-
-                // update completed info
-                var completed = parseInt(completed_span.innerHTML);
-                completed += 1;
-                completed_span.innerHTML = completed;
-            }
+            });
+            
+            //console.log('finished job ' + id);
+        }
+        
+        async function computeFinalSolution() {
+        
+            // wait until all results are sent
+            var promises = new Array();
+            for (var i = 0; i < results.length; i++)
+                promises.push(sendResultsPerJob(i));
+            
+            $.when.apply($, promises).then(function() {
+                // when all sent to server
+                startWaitingNewJobs();
+            }, function() {
+                console.log('error within computeFinalSolution()');
+            });
         }
     </script>
 </body>
